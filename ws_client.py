@@ -13,17 +13,17 @@ SERVER_TIME = "https://fapi.binance.com/fapi/v1/time"
 AGG_TRADES = "https://fapi.binance.com/fapi/v1/aggTrades"
 
 # Minimum amount of prices for calculating Pearson correlation
-COMP_AMOUNT = 200
+COMP_AMOUNT = 100
 
 # Border value for determining relation in prices
 BORDER_VALUE = 0.3
 
 # Price change parameters
-PRICE_CHANGE_TIME = 3600
+PRICE_CHANGE_TIME = 360
 PRICE_CHANGE_PERCENT = 1
 
 
-def pearson_correlation(x, y):
+def pearson_correlation(x, y) -> int:
     """
     Calculates Pearson correlation coefficient
     Borders: -1 <= coeff <= +1
@@ -56,7 +56,7 @@ def pearson_correlation(x, y):
 
 def get_server_time():
     """Returns current server time"""
-    return requests.get(SERVER_TIME, timeout=5).json()['serverTime'] // 1000
+    return requests.get(SERVER_TIME).json()['serverTime'] // 1000
 
 
 def get_eth_price_change_percents():
@@ -73,8 +73,8 @@ def get_eth_price_change_percents():
         "startTime": current_time * 1000,
     }
 
-    old_price = float(requests.get(AGG_TRADES, params=old_price_data,  timeout=5).json()[0]['p'])
-    new_price = float(requests.get(AGG_TRADES, params=new_price_data,  timeout=5).json()[0]['p'])
+    old_price = float(requests.get(AGG_TRADES, params=old_price_data).json()[0]['p'])
+    new_price = float(requests.get(AGG_TRADES, params=new_price_data).json()[0]['p'])
 
     return abs(old_price - new_price) * 100 // old_price
 
@@ -118,6 +118,7 @@ async def main():
             if len(eth_prices) >= COMP_AMOUNT and len(btc_prices) >= COMP_AMOUNT:
                 # calculating Pearson correlation, delete old prices and log to terminal
                 coeff = pearson_correlation(btc_prices[:COMP_AMOUNT], eth_prices[:COMP_AMOUNT])
+                print(f"coeff = {coeff}\n Type = {type(coeff)}")
 
                 btc_prices = []
                 eth_prices = []
