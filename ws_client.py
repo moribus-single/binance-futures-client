@@ -13,13 +13,13 @@ SERVER_TIME = "https://fapi.binance.com/fapi/v1/time"
 AGG_TRADES = "https://fapi.binance.com/fapi/v1/aggTrades"
 
 # Minimum amount of prices for calculating Pearson correlation
-COMP_AMOUNT = 20
+COMP_AMOUNT = 200
 
 # Border value for determining relation in prices
 BORDER_VALUE = 0.3
 
 # Price change parameters
-PRICE_CHANGE_TIME = 60
+PRICE_CHANGE_TIME = 3600
 PRICE_CHANGE_PERCENT = 1
 
 
